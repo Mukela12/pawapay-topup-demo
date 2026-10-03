@@ -1,0 +1,30 @@
+# Files `railway up` should not upload. The Dockerfile rebuilds everything it needs.
+.git
+**/.DS_Store
+**/*.log
+
+# Secrets and local config
+**/.env
+**/.env.*
+!**/.env.example
+
+# Python virtualenv and caches
+backend/.venv
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.ruff_cache
+**/.mypy_cache
+backend/htmlcov
+backend/.coverage
+
+# Node modules, build output and build caches
+**/node_modules
+frontend/dist
+frontend/*.tsbuildinfo
+
+# Elastic Beanstalk bundle output
+build
+
+# Internal build brief (names the client)
+SPEC.md

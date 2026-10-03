@@ -1,0 +1,371 @@
+@import 'tailwindcss';
+
+/* Ringwise tokens: the Forge console register, re-tinted to cool bone and cobalt. */
+@theme {
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  --color-base: #f5f6f3;
+  --color-surface: #fcfcfa;
+  --color-inset: #ecefea;
+  --color-line: #dfe3dd;
+  --color-line-strong: #c9cfc7;
+  --color-ink: #10201f;
+  --color-ink-2: #46575a;
+  --color-ink-3: #8a9795;
+
+  --color-sidebar: #0e1a1c;
+  --color-sidebar-hover: #16272a;
+  --color-sidebar-line: #1d3033;
+  --color-sidebar-text: #9aa8a6;
+  --color-sidebar-ink: #eef1ed;
+  /* Accents lifted for the dark sidebar, not reused light-mode values */
+  --color-sidebar-accent: #7d93f2;
+  --color-sidebar-ok: #4cc493;
+  --color-sidebar-warn: #f0a24a;
+
+  --color-accent: #2747d6;
+  --color-accent-hover: #1f3bb8;
+  --color-accent-tint: #e8ecfc;
+
+  --color-success: #0f7b4f;
+  --color-success-tint: #e3f3ea;
+  --color-warning: #a85a07;
+  --color-warning-tint: #fbf0de;
+  --color-danger: #b42318;
+  --color-danger-tint: #fbe8e6;
+
+  --radius-pill: 4px;
+  --radius-control: 6px;
+  --radius-card: 8px;
+
+  --shadow-xs: 0 1px 2px rgba(14, 26, 28, 0.05);
+  --shadow-sm: 0 1px 3px rgba(14, 26, 28, 0.07), 0 1px 2px rgba(14, 26, 28, 0.04);
+  --shadow-md: 0 6px 16px rgba(14, 26, 28, 0.08), 0 1px 3px rgba(14, 26, 28, 0.05);
+  --shadow-lg: 0 16px 40px rgba(14, 26, 28, 0.12), 0 2px 6px rgba(14, 26, 28, 0.05);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    background: var(--color-base);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--color-base);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-accent-tint);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* On the dark sidebar and console top bar the cobalt ring is too faint; use the lifted accent. */
+  .bg-sidebar :focus-visible {
+    outline-color: var(--color-sidebar-accent);
+  }
+
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--font-mono);
+  }
+
+  button,
+  [role='button'],
+  a {
+    touch-action: manipulation;
+  }
+}
+
+@layer components {
+  /* Buttons: one family, three weights. Press scales, hover only on fine pointers. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: var(--radius-control);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid transparent;
+    transition:
+      transform 160ms var(--ease-out),
+      background-color 150ms ease,
+      border-color 150ms ease,
+      color 150ms ease;
+  }
+  .btn:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+  .btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+  .btn-primary {
+    background: var(--color-accent);
+    color: #fff;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      0 1px 2px rgba(31, 59, 184, 0.3);
+  }
+  .btn-secondary {
+    background: var(--color-surface);
+    color: var(--color-ink);
+    border-color: var(--color-line-strong);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-ink-2);
+  }
+  .btn-sm {
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+  @media (max-width: 767px) {
+    .btn-sm {
+      min-height: 44px;
+    }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .btn-primary:hover:not(:disabled) {
+      background: var(--color-accent-hover);
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--color-inset);
+      border-color: var(--color-ink-3);
+    }
+    .btn-ghost:hover:not(:disabled) {
+      background: var(--color-inset);
+      color: var(--color-ink);
+    }
+  }
+
+  /* Form fields: 16px on phones so iOS never zooms. */
+  .field {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: var(--radius-control);
+    border: 1px solid var(--color-line-strong);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-size: 16px;
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease;
+  }
+  .field::placeholder {
+    color: var(--color-ink-3);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-tint);
+  }
+  .field[aria-invalid='true'] {
+    border-color: var(--color-danger);
+  }
+  .field[aria-invalid='true']:focus {
+    box-shadow: 0 0 0 3px var(--color-danger-tint);
+  }
+  @media (min-width: 768px) {
+    .field {
+      font-size: 15px;
+    }
+  }
+
+  .label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-ink);
+    margin-bottom: 6px;
+  }
+
+  .hint {
+    font-size: 13px;
+    color: var(--color-ink-2);
+  }
+
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+
+  /* Status pill: identical everywhere, never wraps. Wrap the label in a
+     .min-w-0.truncate span so a long one ends in an ellipsis. */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .pill-neutral {
+    background: var(--color-inset);
+    color: var(--color-ink-2);
+  }
+  .pill-success {
+    background: var(--color-success-tint);
+    color: var(--color-success);
+  }
+  .pill-danger {
+    background: var(--color-danger-tint);
+    color: var(--color-danger);
+  }
+  .pill-warning {
+    background: var(--color-warning-tint);
+    color: var(--color-warning);
+  }
+  .pill-accent {
+    background: var(--color-accent-tint);
+    color: var(--color-accent-hover);
+  }
+
+  .live-dot {
+    position: relative;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--color-accent);
+    flex-shrink: 0;
+  }
+  .live-dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--color-accent);
+    animation: live-ping 1.6s var(--ease-out) infinite;
+  }
+  @keyframes live-ping {
+    from {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    to {
+      transform: scale(2.6);
+      opacity: 0;
+    }
+  }
+
+  .empty-state {
+    border: 1px dashed var(--color-line-strong);
+    border-radius: var(--radius-card);
+    background: color-mix(in oklab, var(--color-inset) 45%, transparent);
+    padding: 28px 20px;
+    text-align: center;
+  }
+
+  .mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Receipt fingerprint: a perforated top edge cut with a CSS mask. */
+  .receipt-shadow {
+    filter: drop-shadow(0 1px 1px rgba(14, 26, 28, 0.06)) drop-shadow(0 10px 24px rgba(14, 26, 28, 0.1));
+  }
+  .receipt {
+    --perf-r: 5px;
+    --perf-step: 16px;
+    background: var(--color-surface);
+    border-radius: 0 0 var(--radius-card) var(--radius-card);
+    -webkit-mask: radial-gradient(circle at calc(var(--perf-step) / 2) 0, transparent var(--perf-r), #000 calc(var(--perf-r) + 0.5px))
+      0 0 / var(--perf-step) 100% repeat-x;
+    mask: radial-gradient(circle at calc(var(--perf-step) / 2) 0, transparent var(--perf-r), #000 calc(var(--perf-r) + 0.5px)) 0 0 /
+      var(--perf-step) 100% repeat-x;
+  }
+
+  .table-row-link {
+    cursor: pointer;
+    transition: background-color 120ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .table-row-link:hover {
+      background: color-mix(in oklab, var(--color-inset) 60%, transparent);
+    }
+  }
+  /* Rows fill lists that clip their overflow, so the ring is drawn inside the row,
+     rounded to the card so the first and last rows keep all four edges. */
+  .table-row-link:focus-visible {
+    outline-offset: -2px;
+    border-radius: var(--radius-card);
+  }
+
+  /* A row that scrolls sideways on phones: fade the right edge so a cut-off
+     item reads as "more this way". The fade sits over the row's end padding. */
+  @media (max-width: 639px) {
+    .scroll-fade-x {
+      -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 16px), transparent);
+      mask-image: linear-gradient(to right, #000 calc(100% - 16px), transparent);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-dot::after {
+    animation: none;
+    opacity: 0;
+  }
+  .btn:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* Sonner, re-skinned to the tokens so toasts do not look bolted on. */
+[data-sonner-toaster] {
+  --normal-bg: var(--color-surface);
+  --normal-border: var(--color-line);
+  --normal-text: var(--color-ink);
+  --border-radius: var(--radius-card);
+  font-family: var(--font-sans);
+}
+[data-sonner-toast] {
+  box-shadow: var(--shadow-md) !important;
+}

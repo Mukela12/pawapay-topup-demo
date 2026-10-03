@@ -1,0 +1,8 @@
+# Elastic Beanstalk WORKER tier only. The SQS daemon (sqsd) POSTs to localhost on this path on
+# schedule; DynamoDB leader election means one POST per tick across the worker fleet. Set
+# EB_WORKER=true on the worker environment so /internal/reconcile accepts localhost calls.
+version: 1
+cron:
+  - name: "reconcile"
+    url: "/internal/reconcile"
+    schedule: "*/5 * * * *"

@@ -1,0 +1,32 @@
+# Keep the build context small and free of local state and secrets.
+.git
+.gitignore
+**/.DS_Store
+**/*.log
+
+# Secrets and local config
+**/.env
+**/.env.*
+!**/.env.example
+
+# Python
+backend/.venv
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.ruff_cache
+**/.mypy_cache
+backend/tests
+backend/htmlcov
+backend/.coverage
+
+# Node (stage 1 runs npm ci and builds dist itself)
+**/node_modules
+frontend/dist
+frontend/*.tsbuildinfo
+frontend/node_modules/.tmp
+frontend/node_modules/.vite
+
+# Elastic Beanstalk bundle output and docs that the image does not need
+build
+SPEC.md

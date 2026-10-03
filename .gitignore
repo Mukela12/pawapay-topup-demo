@@ -1,0 +1,31 @@
+# Secrets: never commit real values. backend/.env.example documents the names.
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+
+# Node
+node_modules/
+frontend/dist/
+*.tsbuildinfo
+
+# Elastic Beanstalk bundle output (backend/scripts/build_eb_bundle.sh)
+build/
+
+# OS and editor noise
+.DS_Store
+*.log
+.idea/
+.vscode/
+
+# Internal build brief (names the client)
+SPEC.md
