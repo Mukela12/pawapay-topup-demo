@@ -70,6 +70,8 @@ function readExpected(expected: string): Expected {
   return { kind: 'open', label: 'Stays open' }
 }
 
+const DEFAULT_COUNTRY = 'ZMB'
+
 const EXPECTED_ICON = {
   completes: <CheckCircleIcon size={15} weight="fill" className="shrink-0 text-success" />,
   fails: <XCircleIcon size={15} weight="fill" className="shrink-0 text-danger" />,
@@ -89,7 +91,15 @@ export function TopupForm({ config, scenarios, draft, onCreated }: TopupFormProp
   const countries = config.countries
   // Without a pawaPay token the API refuses top-ups with a 503; say so up front.
   const configured = config.pawapay_configured !== false
-  const [countryCode, setCountryCode] = useState(draft?.country ?? countries[0]?.country ?? '')
+  // Default to the country the sandbox test numbers belong to (Zambia), not whichever country
+  // pawaPay happens to list first.
+  const [countryCode, setCountryCode] = useState(
+    draft?.country ??
+      (countries.find((c) => c.country === (scenarios[0]?.country ?? DEFAULT_COUNTRY)) ??
+        countries.find((c) => c.country === DEFAULT_COUNTRY) ??
+        countries[0])?.country ??
+      '',
+  )
   const country: Country | undefined = countries.find((c) => c.country === countryCode) ?? countries[0]
   const prefix = country?.prefix ?? ''
 
@@ -361,6 +371,8 @@ export function TopupForm({ config, scenarios, draft, onCreated }: TopupFormProp
               <span className="text-danger">{fieldError('phone')}</span>
             ) : submitted && phoneError ? (
               <span className="text-danger">{phoneError}</span>
+            ) : scenarioId ? (
+              'Sandbox test number: the network comes from the test case, so prediction is skipped.'
             ) : prediction.isFetching ? (
               'Checking the network…'
             ) : prediction.data && predictedName ? (
@@ -386,7 +398,7 @@ export function TopupForm({ config, scenarios, draft, onCreated }: TopupFormProp
           <div className="grid gap-2 sm:grid-cols-3">
             {country.providers.map((p) => {
               const checked = p.provider === providerCode
-              const predicted = prediction.data?.provider === p.provider
+              const predicted = !scenarioId && prediction.data?.provider === p.provider
               return (
                 <label
                   key={p.provider}
